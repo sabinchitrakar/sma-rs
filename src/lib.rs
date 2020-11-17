@@ -4,7 +4,7 @@ use ta_common::traits::Indicator;
 
 #[doc(include = "../README.md")]
 pub struct SMA {
-    period: u32,
+
     accumulator: f64,
     history: FixedQueue<f64>,
 }
@@ -12,7 +12,6 @@ pub struct SMA {
 impl SMA {
     pub fn new(period: u32) -> SMA {
         Self {
-            period,
             accumulator: 0_f64,
             history: FixedQueue::new(period),
         }
