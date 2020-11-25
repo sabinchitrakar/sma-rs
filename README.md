@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/immortalinfidel/sma-rs.svg?branch=master)](https://travis-ci.com/immortalinfidel/sma-rs)
+
 #SMA(Simple Moving Average)
 ```
 use ta_common::traits::Indicator;
