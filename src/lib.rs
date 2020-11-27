@@ -16,6 +16,10 @@ impl SMA {
             history: FixedQueue::new(period),
         }
     }
+
+    pub fn get_total(&self) -> f64 {
+        return self.accumulator;
+    }
 }
 
 impl Indicator<f64, Option<f64>> for SMA {
