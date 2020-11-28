@@ -1,11 +1,12 @@
 #![feature(external_doc)]
+
 use ta_common::fixed_queue::FixedQueue;
 use ta_common::traits::Indicator;
 
 #[doc(include = "../README.md")]
 pub struct SMA {
-
     accumulator: f64,
+    period: u32,
     history: FixedQueue<f64>,
 }
 
@@ -13,6 +14,7 @@ impl SMA {
     pub fn new(period: u32) -> SMA {
         Self {
             accumulator: 0_f64,
+            period,
             history: FixedQueue::new(period),
         }
     }
@@ -32,8 +34,12 @@ impl Indicator<f64, Option<f64>> for SMA {
             self.history.add(input);
             self.accumulator = self.accumulator + input;
         }
-        let n = self.history.size() as f64;
-        return Some(self.accumulator / n);
+        return if self.history.is_full() {
+            Some(self.accumulator / self.period as f64)
+        } else {
+            None
+        }
+
     }
 
     fn reset(&mut self) {
@@ -49,13 +55,21 @@ mod tests {
 
     #[test]
     fn it_works() {
-        let mut sma = SMA::new(4);
-        assert_eq!(sma.next(4.0), Some(4.0));
-        assert_eq!(sma.next(5.0), Some(4.5));
-        assert_eq!(sma.next(6.0), Some(5.0));
-        assert_eq!(sma.next(6.0), Some(5.25));
-        assert_eq!(sma.next(6.0), Some(5.75));
-        assert_eq!(sma.next(6.0), Some(6.0));
-        assert_eq!(sma.next(2.0), Some(5.0));
+        let mut sma = SMA::new(5);
+        assert_eq!(sma.next(81.59), None);
+        assert_eq!(sma.next(81.06), None);
+        assert_eq!(sma.next(82.87), None);
+        assert_eq!(sma.next(83.00), None);
+        assert_eq!(sma.next(83.61), Some(82.426));
+        assert_eq!(sma.next(83.15), Some(82.73799999999999));
+        assert_eq!(sma.next(82.84), Some(83.09399999999998));
+        assert_eq!(sma.next(83.99), Some(83.31799999999998));
+        assert_eq!(sma.next(84.55), Some(83.62799999999999));
+        assert_eq!(sma.next(84.36), Some(83.77799999999999));
+        assert_eq!(sma.next(85.53), Some(84.25399999999998));
+        assert_eq!(sma.next(86.54), Some(84.99399999999997));
+        assert_eq!(sma.next(86.89), Some(85.57399999999997));
+        assert_eq!(sma.next(87.77), Some(86.21799999999996));
+        assert_eq!(sma.next(87.29), Some(86.80399999999996));
     }
 }
