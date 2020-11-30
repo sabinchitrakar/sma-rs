@@ -26,19 +26,17 @@ impl SMA {
 
 impl Indicator<f64, Option<f64>> for SMA {
     fn next(&mut self, input: f64) -> Option<f64> {
-        if self.history.is_full() {
+        return if self.history.is_full() {
             let out = self.history.at(0).unwrap();
             self.history.add(input);
             self.accumulator = self.accumulator - out + input;
+            Some(self.accumulator / self.period as f64)
         } else {
             self.history.add(input);
             self.accumulator = self.accumulator + input;
-        }
-        return if self.history.is_full() {
-            Some(self.accumulator / self.period as f64)
-        } else {
             None
         }
+
 
     }
 
@@ -60,7 +58,7 @@ mod tests {
         assert_eq!(sma.next(81.06), None);
         assert_eq!(sma.next(82.87), None);
         assert_eq!(sma.next(83.00), None);
-        assert_eq!(sma.next(83.61), Some(82.426));
+        assert_eq!(sma.next(83.61), None);
         assert_eq!(sma.next(83.15), Some(82.73799999999999));
         assert_eq!(sma.next(82.84), Some(83.09399999999998));
         assert_eq!(sma.next(83.99), Some(83.31799999999998));

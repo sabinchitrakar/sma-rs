@@ -5,11 +5,11 @@
 use ta_common::traits::Indicator;
 use sma_rs::SMA;
 let mut sma = SMA::new(5);
- assert_eq!(sma.next(81.59), None);
+assert_eq!(sma.next(81.59), None);
 assert_eq!(sma.next(81.06), None);
 assert_eq!(sma.next(82.87), None);
 assert_eq!(sma.next(83.00), None);
-assert_eq!(sma.next(83.61), Some(82.426));
+assert_eq!(sma.next(83.61), None);
 assert_eq!(sma.next(83.15), Some(82.73799999999999));
 assert_eq!(sma.next(82.84), Some(83.09399999999998));
 assert_eq!(sma.next(83.99), Some(83.31799999999998));
